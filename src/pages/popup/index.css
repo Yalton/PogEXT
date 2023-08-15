@@ -1,0 +1,106 @@
+
+:root {
+  --color_main: #1f1f23;
+  --color_grey: #26262c;
+  --color_white: #efeff1;
+  --color_streamPurple: #772ce8;
+}
+
+
+body {
+  background-color: var(--color_main);
+  color: var(--color_white);
+  font-family: 'Arial', sans-serif;
+  width: 300px; /* You can adjust this as needed */
+  border: 1px solid var(--color_grey);
+}
+
+div {
+  padding: 10px;
+  margin: 5px;
+}
+
+.root
+{
+  border: 1px solid var(--color_grey);
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background-color: var(--color_main);
+  border: 1px solid var(--color_white);
+  border-radius: 3px;
+  position: relative;
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--color_main);
+}
+
+input[type="checkbox"]:checked::before {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  color: var(--color_streamPurple);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background:  var(--color_streamPurple);
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  color:  var(--color_streamPurple);
+}
+
+label {
+  display: flex;
+  align-items: center; /* Align items vertically in the middle */
+}
+
+
+button {
+  background-color:  var(--color_streamPurple);
+  border: none;
+  color:  var(--color_white);
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+
+#chat-overlay {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 200px;
+    height: 300px;
+    overflow: auto;
+    border: 1px solid var(--color_white);
+    background-color: var(--color_grey);
+    cursor: move;
+  }
+  

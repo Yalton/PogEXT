@@ -1,33 +1,38 @@
-// src/content.ts
-const chatWindow: HTMLDivElement = document.createElement('div');
-chatWindow.id = 'chat-overlay';
-document.body.appendChild(chatWindow);
-
-// Simulate random chat messages
-setInterval(() => {
-  const message: HTMLParagraphElement = document.createElement('p');
-  message.textContent = 'Random Message'; // Can be replaced with actual emotes or messages
-  chatWindow.appendChild(message);
-}, 1000);
-
-
-// Function to handle dragging
-const dragStart = (e: MouseEvent) => {
-    const offset = {
-      x: e.clientX - chatWindow.offsetLeft,
-      y: e.clientY - chatWindow.offsetTop
-    };
-    const drag = (e: MouseEvent) => {
-      chatWindow.style.left = e.clientX - offset.x + 'px';
-      chatWindow.style.top = e.clientY - offset.y + 'px';
-    };
-    const dragEnd = () => {
-      window.removeEventListener('mousemove', drag);
-      window.removeEventListener('mouseup', dragEnd);
-    };
-    window.addEventListener('mousemove', drag);
-    window.addEventListener('mouseup', dragEnd);
-  };
+function extractTextFromHTML(html: string): string {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || '';
+  }
   
-  chatWindow.addEventListener('mousedown', dragStart);
+  function preprocessContent(content: string): string {
+    return content.replace(/\s+/g, ' ').trim();
+  }
+  
+  function summarizeText(text: string): string {
+    // Split the text into sentences
+    const sentences = text.match(/[^\.!\?]+[\.!\?]+/g) || [];
+  
+    // Simple summarization by taking the first few sentences
+    // You can replace this with more sophisticated logic
+    const summary = sentences.slice(0, 3).join(' ');
+  
+    return summary;
+  }
+  
+  function extractAndProcessContent() {
+    // Extract the main content or specific elements based on your requirement
+    const bodyHTML = document.body.innerHTML;
+  
+    // Extract and preprocess the text content
+    const bodyText = extractTextFromHTML(bodyHTML);
+    const processedContent = preprocessContent(bodyText);
+  
+    // Summarize the processed content
+    const summary = summarizeText(processedContent);
+  
+    // Example: Sending summary to the background script
+    chrome.runtime.sendMessage({ content: summary });
+  }
+  
+  extractAndProcessContent();
   

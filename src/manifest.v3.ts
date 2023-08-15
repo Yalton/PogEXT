@@ -18,9 +18,14 @@ export default {
 	},
 	web_accessible_resources: [
 		{
-			resources: ['pages/popup/popup.ts'],
-			matches: ['*://*.twitter.com/*'],
-		},
+            resources: [
+                'utils/emotes.ts',
+                'assets/emotes/*.webp' // Allow access to all .webp files in the emotes folder
+            ],
+            matches: ['<all_urls>'],
+        },
 	],
-    permissions: ["activeTab"]
+    permissions: ["storage","activeTab","tabs"]
 };
+
+                // 'pages/popup/popup.ts', 

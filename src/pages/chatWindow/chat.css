@@ -1,0 +1,93 @@
+
+:root {
+  --color_main: #1f1f23;
+  --color_grey: #26262c;
+  --color_white: #efeff1;
+  --color_streamPurple: #772ce8;
+}
+
+#root {
+  height: 100%;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+
+body {
+  background-color: var(--color_main);
+  color:  var(--color_white);
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+h2 {
+  color: var(--color_white);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+p {
+  margin: 5px 0;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #333;
+  border-bottom: 1px solid var(--color_white); /* Add this line */
+}
+
+
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-container {
+  height: 100%; /* Adjust the height as needed */
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer and Edge */
+}
+
+.chat-container::-webkit-scrollbar {
+  display: none; /* Chrome and Safari */
+}
+
+@keyframes slide-in-bottom {
+  from {
+    transform: translateY(100%); /* Starts from the bottom */
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0); /* Slides to the original position */
+    opacity: 1;
+  }
+}
+
+.slide-in-message {
+  animation: slide-in-bottom 0.1s ease-out; /* Change the animation name to slide-in-bottom */
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+
+.slide-in-message strong {
+  font-size: 18px;
+}
+
+.emote-image {
+  height: 2em; 
+  width: 2em;
+  vertical-align: middle;
+}
