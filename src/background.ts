@@ -36,4 +36,16 @@ chrome.runtime.onMessage.addListener((message) => {
       );
     }
   }
+
+    if (message.action === 'summarizeContent') {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const activeTab = tabs[0];
+      if (activeTab?.id) {
+        chrome.scripting.executeScript({
+          target: { tabId: activeTab.id },
+          files: ['content/content.js'], // Path to the compiled content script
+        });
+      }
+    });
+  }
 });
