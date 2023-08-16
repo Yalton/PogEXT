@@ -31,5 +31,5 @@ export default {
             matches: ['<all_urls>'],
         },
 	],
-    permissions: ["storage","activeTab","tabs"]
+    permissions: ["storage","activeTab"]
 };
