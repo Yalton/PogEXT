@@ -3,8 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 // import ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
-
 import { emotes } from '../../utils/emotes';
+import { uniqueUsernames } from '../../utils/usernames';
+import { messagePool } from '../../utils/messages';
 
 
 const ChatWindow = () => {
@@ -13,17 +14,34 @@ const ChatWindow = () => {
         emote: string | undefined; user: string; text: string; color: string
     }[]>([]);
     const [messageFrequency, setMessageFrequency] = useState(1000);
+    const [chatName, setChatName] = useState("PogEXT Chat"); // Default name
     const [isPaused, setIsPaused] = useState(false); // New state for pause status
     const chatContainerRef = useRef<HTMLDivElement>(null);
     let totalMessagesLocal = 0;
 
     const colors = ["red", "blue", "green", "purple"];
 
+    useEffect(() => {
+        chrome.storage.sync.get('chatName', (data) => {
+            if (data.chatName) {
+                setChatName(data.chatName);
+            }
+        });
+    }, []);
+
+
     const getRandomMessage = () => {
-        const texts = ["Hello!", "How are you?", "This is a test.", "Random Message"];
+        //const texts = ["Hello!", "How are you?", "This is a test.", "Random Message"];
+        // const message = messagePool[Math.floor(Math.random() * messagePool.length)];
         const randomUser = usernames[Math.floor(Math.random() * usernames.length)];
         const randomEmote = emotes[Math.floor(Math.random() * emotes.length)]; // Select a random emote
-        return { user: randomUser.name, text: texts[Math.floor(Math.random() * texts.length)], color: randomUser.color, emote: randomEmote };
+        // 45% chance of returning only an emote
+        if (Math.random() < 0.65) {
+            return { user: randomUser.name, text: '', color: randomUser.color, emote: randomEmote };
+        }
+        // Otherwise, include a text message
+        const message = messagePool[Math.floor(Math.random() * messagePool.length)];
+        return { user: randomUser.name, text: message, color: randomUser.color, emote: randomEmote };
     };
 
     // Retrieve the current total messages count from storage
@@ -31,7 +49,6 @@ const ChatWindow = () => {
         totalMessagesLocal = data.totalMessages || 0;
     });
 
-    // Retrieve message frequency and users in chat from storage
     useEffect(() => {
         chrome.storage.sync.get(['messageFrequency', 'usersInChat'], (data) => {
             if (data.messageFrequency) {
@@ -39,13 +56,36 @@ const ChatWindow = () => {
             }
             if (data.usersInChat) {
                 const names = Array.from({ length: data.usersInChat }, (_, i) => ({
-                    name: `User${i + 1}`,
+                    name: uniqueUsernames[i % uniqueUsernames.length],
                     color: colors[i % colors.length]
                 }));
                 setUsernames(names);
             }
         });
     }, []);
+
+    //Receive summation from Background Script
+    useEffect(() => {
+        const onMessage = (message: any) => {
+            if (message.action === 'createReaction') {
+                const summary = message.summary;
+
+                // Create a reaction based on the summary
+                // You can define logic to create a reaction here
+                // For example, you can add the summary as a new message
+                setMessages((prevMessages) => [
+                    ...prevMessages,
+                    { user: 'Bot', text: summary, color: 'gray', emote: undefined },
+                ]);
+            }
+        };
+
+        chrome.runtime.onMessage.addListener(onMessage);
+
+        return () => {
+            chrome.runtime.onMessage.removeListener(onMessage);
+        };
+    }, [messages]);
 
     // Simulate random chat messages
     useEffect(() => {
@@ -85,11 +125,10 @@ const ChatWindow = () => {
         }
     }, [messages]);
 
-
     return (
         <div className="chat-window">
             <div className="sticky-header">
-                <h2>PogEXT Chat</h2>
+                <h2>{chatName}</h2>
             </div>
             <div className="chat-content"> {/* New wrapper div */}
                 <div className="chat-container" ref={chatContainerRef}>

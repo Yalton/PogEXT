@@ -1,14 +1,20 @@
 export default {
     manifest_version: 3,
     name: "PogEXT",
-    description: "Chat Overlay Extension",
+    description: "Extension to simulate your own personal twitch chat in the browser",
     version: "1.0",
     content_scripts: [
         {
             matches: ["<all_urls>"],
-            js: ["content/content.ts"] // Point to the TypeScript file
+            js: ["content/content.ts"],
+            run_at: "document_idle"
         }
     ],
+    icons: {
+		'128': 'assets/icon_128.png',
+		'48': 'assets/icon_48.png',
+		'16': 'assets/icon_16.png',
+	},
 	options_page: 'pages/popup/index.html',
 	action: {
 		default_popup: 'pages/popup/index.html',
@@ -27,5 +33,3 @@ export default {
 	],
     permissions: ["storage","activeTab","tabs"]
 };
-
-                // 'pages/popup/popup.ts', 

@@ -1,7 +1,9 @@
 let chatWindowId: number | null = null;
 
 chrome.runtime.onMessage.addListener((message) => {
+  console.log('Background: Received a message', message);
   if (message.action === 'openChatWindow') {
+    console.log('Background: Opening chat window');
     if (chatWindowId !== null) {
       // If the chat window is already open, close it
       chrome.windows.remove(chatWindowId, () => {
@@ -34,18 +36,23 @@ chrome.runtime.onMessage.addListener((message) => {
           }
         }
       );
+
+      // Send a message to the content script to start summarizing
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const activeTab = tabs[0];
+        const activeTabId = activeTab?.id;
+      
+        if (activeTabId !== undefined) {
+          console.log('Background: Sending summarizeContent message to content script');
+          chrome.tabs.sendMessage(activeTabId, { action: 'summarizeContent' });
+        } else {
+          console.log('Background: Active tab is not found');
+        }
+      });
     }
   }
-
-    if (message.action === 'summarizeContent') {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const activeTab = tabs[0];
-      if (activeTab?.id) {
-        chrome.scripting.executeScript({
-          target: { tabId: activeTab.id },
-          files: ['content/content.js'], // Path to the compiled content script
-        });
-      }
-    });
+  else {
+    console.log('Background: Unhandled message action', message.action);
   }
+
 });
